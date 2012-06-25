@@ -1,0 +1,4 @@
+creditcalc
+==========
+
+Credit calculator
