@@ -11,12 +11,13 @@
         <br /> Payment every month:
         <% credit = params[:credit].to_i %>
         <% months = params[:months].to_i %>
-        <% interest = params[:interest].to_i %>
+        <% interest = params[:interest].to_f %>
         <% percent_month = interest / 12.0 / 100.0 %>
         <% pay_monthly = (credit * (percent_month * (1 + percent_month) ** months) / ((1 + percent_month) ** months - 1)).ceil %>
         <%= pay_monthly.to_i %>
         <h3>Payment graph</h3>
         <% total_percent = 0 %>
+	<% total_paid = 0 %>
         <table>
           <tr>
             <th>No</th>
@@ -31,15 +32,18 @@
               <% total_percent += this_pay_percent %>
               <% this_pay_body = pay_monthly - this_pay_percent %>
               <% this_pay_body = rest if this_pay_body > rest %>
+	      <% total_paid += this_pay_percent + this_pay_body %>
               <% rest -= this_pay_body %>
               <tr>
                 <td><%= i %></td>
-                <td><%= pay_monthly.to_i %></td>
+                <td><%= (this_pay_percent + this_pay_body).to_i %></td>
                 <td><%= this_pay_percent.to_i %></td>
                 <td><%= this_pay_body.to_i %></td>
                 <td><%= rest.to_i %></td>
               </tr>
           <% end %>
         </table>
+	Total paid: <%= total_paid.to_i % <br />
+	Total percent paid: <%= total_percent.to_i %>
     <% end %>
 <% end %>
