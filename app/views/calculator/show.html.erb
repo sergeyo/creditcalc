@@ -1,0 +1,45 @@
+<h2>Calculator</h2>
+<%= form_tag '/calculator/show' do %>
+    <%= label_tag :credit, 'Credit sum:' %>
+    <%= text_field_tag :credit, params[:credit] %>
+    <%= label_tag :interest, 'Interest_rate:' %>
+    <%= text_field_tag :interest, params[:interest] %>
+    <%= label_tag :months, 'Months:' %>
+    <%= text_field_tag :months, params[:months] %>
+    <%= submit_tag "Calc this!" %>
+    <% if params[:credit] then %>
+        <br /> Payment every month:
+        <% credit = params[:credit].to_i %>
+        <% months = params[:months].to_i %>
+        <% interest = params[:interest].to_i %>
+        <% percent_month = interest / 12.0 / 100.0 %>
+        <% pay_monthly = (credit * (percent_month * (1 + percent_month) ** months) / ((1 + percent_month) ** months - 1)).ceil %>
+        <%= pay_monthly.to_i %>
+        <h3>Payment graph</h3>
+        <% total_percent = 0 %>
+        <table>
+          <tr>
+            <th>No</th>
+            <th>Payment</th>
+            <th>Interest payment</th>
+            <th>Body payment</th>
+            <th>Credit rest</th>
+          </tr>
+          <% rest = credit %>
+          <% (1..months).each do |i| %>
+              <% this_pay_percent = rest * percent_month %>
+              <% total_percent += this_pay_percent %>
+              <% this_pay_body = pay_monthly - this_pay_percent %>
+              <% this_pay_body = rest if this_pay_body > rest %>
+              <% rest -= this_pay_body %>
+              <tr>
+                <td><%= i %></td>
+                <td><%= pay_monthly.to_i %></td>
+                <td><%= this_pay_percent.to_i %></td>
+                <td><%= this_pay_body.to_i %></td>
+                <td><%= rest.to_i %></td>
+              </tr>
+          <% end %>
+        </table>
+    <% end %>
+<% end %>

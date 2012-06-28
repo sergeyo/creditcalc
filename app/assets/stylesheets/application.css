@@ -1,3 +1,16 @@
+table {
+    border: 1px solid black;
+    border-spacing: 0px;
+    padding: 0px;
+}
+
+th, tr, td {
+    border: 1px solid gray;
+    border-spacing: 0px;
+    padding: 3px;
+    text-align: right;
+}
+
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
