@@ -21,7 +21,4 @@ test:
 production:
   adapter: postgres
   database: creditcalc
-  port:1234
-  username: excell
-  password: excell
   timeout: 5000
