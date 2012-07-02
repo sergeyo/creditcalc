@@ -1,23 +1,20 @@
 <h2>Calculator</h2>
-<%= form_tag '/calculator/show' do %>
-    <%= label_tag :credit, 'Credit sum:' %>
-    <%= text_field_tag :credit, params[:credit] %>
-    <%= label_tag :interest, 'Interest_rate:' %>
-    <%= text_field_tag :interest, params[:interest] %>
-    <%= label_tag :months, 'Months:' %>
-    <%= text_field_tag :months, params[:months] %>
-    <%= submit_tag "Calc this!" %>
-    <% if params[:credit] then %>
-        <br /> Payment every month:
-        <% credit = params[:credit].to_i %>
-        <% months = params[:months].to_i %>
-        <% interest = params[:interest].to_f %>
-        <% percent_month = interest / 12.0 / 100.0 %>
-        <% pay_monthly = (credit * (percent_month * (1 + percent_month) ** months) / ((1 + percent_month) ** months - 1)).ceil %>
-        <%= pay_monthly.to_i %>
+<%= form_for @credit, url: '/calculator/show' do |f| %>
+    <%= f.label :type, 'Type:' %>
+    <%= f.select :type, options_for_select([['Annual by months', 0], ['Annual by pay', 1], ['Differential', 2]], @credit.type) %>
+    <%= f.label :amount, 'Credit sum:' %>
+    <%= f.text_field :amount %>
+    <%= f.label :interest, 'Interest_rate:' %>
+    <%= f.text_field :interest %>
+    <%= f.label :months, 'Months:' %>
+    <%= f.text_field :months %>
+    <%= f.label :pay_monthly, 'Pay monthly:' %>
+    <%= f.text_field :pay_monthly %>
+    <%= f.submit "Calc this!" %>
+    <% if @credit.amount then %>
         <h3>Payment graph</h3>
-        <% total_percent = 0 %>
-	<% total_paid = 0 %>
+        Total paid: <%= (@credit.amount + @credit.get_total_interest).to_i %> <br/>
+        Total percent paid: <%= @credit.get_total_interest.to_i %>
         <table>
           <tr>
             <th>No</th>
@@ -26,24 +23,15 @@
             <th>Body payment</th>
             <th>Credit rest</th>
           </tr>
-          <% rest = credit %>
-          <% (1..months).each do |i| %>
-              <% this_pay_percent = rest * percent_month %>
-              <% total_percent += this_pay_percent %>
-              <% this_pay_body = pay_monthly - this_pay_percent %>
-              <% this_pay_body = rest if this_pay_body > rest %>
-	      <% total_paid += this_pay_percent + this_pay_body %>
-              <% rest -= this_pay_body %>
+          <% @credit.get_payment_table.each do |row| %>
               <tr>
-                <td><%= i %></td>
-                <td><%= (this_pay_percent + this_pay_body).to_i %></td>
-                <td><%= this_pay_percent.to_i %></td>
-                <td><%= this_pay_body.to_i %></td>
-                <td><%= rest.to_i %></td>
+                <td><%= row[0] %></td>
+                <td><%= (row[1] + row[2]).to_i %></td>
+                <td><%= row[1].to_i %></td>
+                <td><%= row[2].to_i %></td>
+                <td><%= row[3].to_i %></td>
               </tr>
           <% end %>
         </table>
-		Total paid: <%= total_paid.to_i %> <br />
-	Total percent paid: <%= total_percent.to_i %>
     <% end %>
 <% end %>
