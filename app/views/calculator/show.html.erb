@@ -1,37 +1,88 @@
-<h2>Calculator</h2>
+#encoding:utf-8
+<h2>Кредитный калькулятор</h2>
 <%= form_for @credit, url: '/calculator/show' do |f| %>
-    <%= f.label :type, 'Type:' %>
-    <%= f.select :type, options_for_select([['Annual by months', 0], ['Annual by pay', 1], ['Differential', 2]], @credit.type) %>
-    <%= f.label :amount, 'Credit sum:' %>
-    <%= f.text_field :amount %>
-    <%= f.label :interest, 'Interest_rate:' %>
-    <%= f.text_field :interest %>
-    <%= f.label :months, 'Months:' %>
-    <%= f.text_field :months %>
-    <%= f.label :pay_monthly, 'Pay monthly:' %>
-    <%= f.text_field :pay_monthly %>
-    <%= f.submit "Calc this!" %>
+    <table border="0">
+      <tr>
+        <td>
+          <%= f.label :type, 'Тип кредита:' %>
+          <%= f.select :type, options_for_select([['Аннуитет по сроку', 0], ['Аннуитет по платежу', 1], ['Дифференцированный платёж', 2]], @credit.type) %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.label :amount, 'Сумма кредита:' %>
+          <%= f.text_field :amount %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.label :interest, 'Процентная ставка:' %>
+          <%= f.text_field :interest %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.label :months, 'Срок, месяцев:' %>
+          <%= f.text_field :months %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.label :pay_monthly, 'Ежемесячный платёж:' %>
+          <%= f.text_field :pay_monthly %>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= f.submit "Рассчитать!" %>
+        </td>
+      </tr>
+    </table>
     <% if @credit.amount then %>
-        <h3>Payment graph</h3>
-        Total paid: <%= (@credit.amount + @credit.get_total_interest).to_i %> <br/>
-        Total percent paid: <%= @credit.get_total_interest.to_i %>
-        <table>
-          <tr>
-            <th>No</th>
-            <th>Payment</th>
-            <th>Interest payment</th>
-            <th>Body payment</th>
-            <th>Credit rest</th>
-          </tr>
-          <% @credit.get_payment_table.each do |row| %>
-              <tr>
-                <td><%= row[0] %></td>
-                <td><%= (row[1] + row[2]).to_i %></td>
-                <td><%= row[1].to_i %></td>
-                <td><%= row[2].to_i %></td>
-                <td><%= row[3].to_i %></td>
-              </tr>
-          <% end %>
-        </table>
+        <div id='table'>
+          <h3>Таблица патежей</h3>
+          <table border="0">
+            <tr>
+              <td>Сумма кредита:</td>
+              <td><%= @credit.amount %></td>
+            </tr>
+            <tr>
+              <td>Срок кредитования:</td>
+              <td> <%= int_to_s_or_empty(@credit.months / 12, " лет ") + int_to_s_or_empty(@credit.months % 12, " месяцев") %>
+              </td>
+            </tr>
+            <% if @credit.type < 2 %>
+                <tr>
+                  <td>Ежемесячный платёж:</td>
+                  <td>  <%= @credit.pay_monthly %>
+                  </td>
+                </tr>
+            <% end %>
+            <tr>
+              <td>Сумма процентов:</td>
+              <td> <%= @credit.get_total_interest.to_i %></td>
+            </tr>
+
+          </table>
+          <hr />
+          <table>
+            <tr>
+              <th>№</th>
+              <th>Платёж</th>
+              <th>Проценты</th>
+              <th>Гашение кредита</th>
+              <th>Остаток кредита</th>
+            </tr>
+            <% @credit.get_payment_table.each do |row| %>
+                <tr>
+                  <td><%= row[0] %></td>
+                  <td><%= (row[1] + row[2]).to_i %></td>
+                  <td><%= row[1].to_i %></td>
+                  <td><%= row[2].to_i %></td>
+                  <td><%= row[3].to_i %></td>
+                </tr>
+            <% end %>
+          </table>
+        </div>
     <% end %>
 <% end %>

@@ -26,35 +26,28 @@ class Credit < ActiveRecord::Base
   end
 
   def get_payment_table
-    pays = []
     return [] unless self.amount && self.pay_monthly && self.months
     rest = self.amount
-    if type < 2 then
-      (1..months).each do |i|
-        this_pay_percent = rest * get_month_interest()
-        this_pay_body = pay_monthly - this_pay_percent
-        this_pay_body = rest if this_pay_body > rest
-        pays.push [i, this_pay_percent, this_pay_body, rest -= this_pay_body]
-      end
-    else
-      (1..months).each do |i|
-        pays.push [i, rest * get_month_interest, self.pay_monthly, rest -= self.pay_monthly]
-      end
+    (1..months).map do |i|
+      this_pay_percent = rest * get_month_interest
+      this_pay_body = pay_monthly
+      this_pay_body -= this_pay_percent if self.type < 2
+      this_pay_body = rest if this_pay_body > rest
+      [i, this_pay_percent, this_pay_body, rest -= this_pay_body]
     end
-    pays
   end
 
   def get_total_interest
     total_interest = 0
-    return 0 unless self.amount && self.pay_monthly
+    return 0 unless amount && pay_monthly
     rest = self.amount
     while rest > 0
       this_interest = rest * get_month_interest
       total_interest += this_interest
       if type < 2 then
-        rest -= self.pay_monthly - this_interest
+        rest -= pay_monthly - this_interest
       else
-        rest -= self.pay_monthly
+        rest -= pay_monthly
       end
     end
     total_interest
