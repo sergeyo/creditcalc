@@ -6,4 +6,8 @@ module CalculatorHelper
       ""
     end
   end
+
+  def format_summ(sum)
+    sum.to_s.reverse.scan(/\d{3}|\d{2}|\d{1}/).join(" ").reverse
+  end
 end
