@@ -3,9 +3,9 @@
 <%= form_for @credit, url: '/calculator/show', method: 'get' do |f| %>
     <%= f.label :type, 'Тип кредита:' %>
     <div class="btn-group" data-toggle="buttons-radio">
-      <button class="btn">Аннуитет по сроку</button>
-      <button class="btn">Аннуитет по платежу</button>
-      <button class="btn">Дифференцированный платёж</button>
+      <button class="btn" onclick="set_controls_credittype('annual_by_payment')" href='#'>Аннуитет по сроку</button>
+      <button class="btn" onclick="set_controls_credittype('annual_by_period')" href='#'>Аннуитет по платежу</button>
+      <button class="btn" onclick="set_controls_credittype('differential')" href='#'>Дифференцированный платёж</button>
     </div>
     <%= f.hidden_field :type %>
 
