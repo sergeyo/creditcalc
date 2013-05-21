@@ -22,4 +22,4 @@ set_controls_credittype = (type) ->
       disable_element('#credit_pay_monthly')
       enable_element('#credit_months')
       $('#credit_type').attr(value, 2)
-  true
+  0
