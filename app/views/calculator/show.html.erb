@@ -1,12 +1,14 @@
 #encoding:utf-8
+
 <h1>Кредитный калькулятор</h1>
+    <div class="btn-group" data-toggle="buttons-radio">
+      <button class="btn" onclick="return set_controls_credittype('annual_by_payment');" href='#'>Аннуитет по сроку</button>
+      <button class="btn" onclick="return set_controls_credittype('annual_by_period');" href='#'>Аннуитет по платежу</button>
+      <button class="btn" onclick="return set_controls_credittype('differential');" href='#'>Дифференцированный платёж</button>
+    </div>
 <%= form_for @credit, url: '/calculator/show', method: 'get' do |f| %>
     <%= f.label :type, 'Тип кредита:' %>
-    <div class="btn-group" data-toggle="buttons-radio">
-      <button class="btn" onclick="set_controls_credittype('annual_by_payment')" href='#'>Аннуитет по сроку</button>
-      <button class="btn" onclick="set_controls_credittype('annual_by_period')" href='#'>Аннуитет по платежу</button>
-      <button class="btn" onclick="set_controls_credittype('differential')" href='#'>Дифференцированный платёж</button>
-    </div>
+    <span id="sss">111</span>
     <%= f.hidden_field :type %>
 
     <!--<%= f.select :type, options_for_select([['Аннуитет по сроку', 0], ['Аннуитет по платежу', 1], ['Дифференцированный платёж', 2]], @credit.type) %>-->
@@ -20,11 +22,11 @@
         <%= f.label :pay_monthly, 'Ежемесячный платёж:' %>
         <%= f.text_field :pay_monthly %>
         <%= f.submit "Рассчитать!" %>
-
+<% end %>
 
     <% if @credit.amount then %>
         <div id='table'>
-          <h2>Таблица патежей</h2>
+          <h2>Рассчитанные параметры кредита</h2>
           <table class="table">
             <tr>
               <td>Сумма кредита:</td>
@@ -50,6 +52,7 @@
           </table>
           <hr />
           <div class="span6">
+          <h2>Таблица платежей</h2>
           <table class="table table-condensed table-stripped" style="text-align: right">
             <tr>
               <th style="text-align: right">№</th>
@@ -71,4 +74,3 @@
           </div>
         </div>
     <% end %>
-<% end %>
