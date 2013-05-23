@@ -8,7 +8,6 @@
     </div>
 <%= form_for @credit, url: '/calculator/show', method: 'get' do |f| %>
     <%= f.label :type, 'Тип кредита:' %>
-    <span id="sss">111</span>
     <%= f.hidden_field :type %>
 
     <!--<%= f.select :type, options_for_select([['Аннуитет по сроку', 0], ['Аннуитет по платежу', 1], ['Дифференцированный платёж', 2]], @credit.type) %>-->
